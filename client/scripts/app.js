@@ -10,6 +10,7 @@ var app = {};
 // };
 
 var roomnameObj = {};
+var friendsObject = {};
 
 var app = {
   init: function() {
@@ -37,10 +38,29 @@ var app = {
      
       $('#addRoomField').css('display', 'block');
       $('#add').css('display', 'block');
-      var newRoomName = $("#addRoomField").val();
-      app.createNewRoom(newRoomName);
+      // var newRoomName = $("#addRoomField").val();
+      // app.createNewRoom(newRoomName);
 
     });
+
+    $('body').on('click','#add', function() {
+      //alert('dd')
+      var newRoomName = $("#addRoomField").val();
+      app.createNewRoom(newRoomName);
+      $('#addRoomField').css('display', 'none');
+      $('#add').css('display', 'none');
+      
+
+    });
+
+    $('body').on('click', '.username', function() {
+      var friend = $(this).text();
+      $('#friendsContainer').append('<p>' + friend + '</p>');
+      friendsObject[friend] = true;
+      app.fetch();
+    });
+    app.fetch();
+
   },
   send: function(message) {
     $.ajax({
@@ -88,11 +108,17 @@ var app = {
   },
   renderMessage: function(message) {
     var user = '<a href=' + '"' + message.username + '">';
+    if (message.username in friendsObject) {
+      var userNameSpan = message.username;
+      $('.' + userNameSpan).css('font-weight', 'bold');
+      
+    }
 
-    $('#chats').append('<div class="msg"><p>' + message.username + ': ' + message.text + 
-      '</p><button>Add Friend</button></div>');  //'' + ''
+    $('#chats').append('<div class="msg"><p><span class="username">'  +  message.username + '</span>' + ': ' + 
+    '<span class=' + '"' + message.username + '"' + '>' +  message.text + '</span>' +
+      '</p><button>Block User</button></div>');  //'' + ''
    // $('div').append('<button>Add Friend</button>')
-
+   // $('.msgText').css('font-weight', 'normal');
   },
   renderRoom: function(message) {
     if(typeof(message) === 'string') {

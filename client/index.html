@@ -24,10 +24,10 @@
     <script src="scripts/app.js"></script>
   </head>
   <body>
-    <div id="main">
-      <h1>chatterbox</h1>
-      <dropdown>Rooms: </dropdown>
-      <select id="roomDropdown">
+  <div id='left'>
+    <div id='roomsContainer'>
+    <h2>Rooms</h2>
+    <select id="roomDropdown">
         <option value="lobby">lobby</option>
  
       </select>
@@ -35,9 +35,24 @@
       <button id='addRoomButton'>Add Room</button>
       <input type='text' id='addRoomField'>
       <button id='add'>Add</button>
+    </div>
+  </div>
+  <div id='center'>
+    <div id="main">
+      <h1>chatterbox</h1>
+      <dropdown>Rooms: </dropdown>
+      
       <input type='text' id='messageField'>
       <button id='submitMessageButton'>Submit</button>
+
     </div>
+    
     <div id="chats"></div>
+    </div>
+    <div id='right'>
+    <div id='friendsContainer'>
+      <h2>Friends</h2>
+    </div>
+    </div>
   </body>
 </html>
