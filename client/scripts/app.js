@@ -19,15 +19,27 @@ var app = {
         text: $('#messageField').val(),
         roomname: 'YUJINS WORLD'
       };
+      app.send(messageText);
       app.renderRoom(messageText);
       app.renderMessage(messageText);
     });
 
    
     $('#changeRoomButton').on('click', function(){
-      //var roomName = $.(val();
-      //$('#chats').filter(roomName).show();
-    
+      
+      var roomName = $("option:selected").text();
+      app.clearMessages();
+      app.fetchByRoom(roomName);
+
+    });
+
+    $('#addRoomButton').on('click', function() {
+     
+      $('#addRoomField').css('display', 'block');
+      $('#add').css('display', 'block');
+      var newRoomName = $("#addRoomField").val();
+      app.createNewRoom(newRoomName);
+
     });
   },
   send: function(message) {
@@ -38,8 +50,8 @@ var app = {
     data: JSON.stringify(message),
     contentType: 'application/json',
     success: function (data) {
-
-     app.renderMessage(data);
+      console.log('Message sent')
+     //app.renderMessage(data);
   },
     error: function (data) {
     console.error('chatterbox: Failed to send message', data);
@@ -72,23 +84,68 @@ var app = {
   })
   },
   clearMessages: function() {
-    $('#chats').remove()
+    $('#chats').empty()
   },
   renderMessage: function(message) {
-    console.log('render message: ' , message);
-    //renderRoom(mesage);
-    $('#chats').prepend('<p id=' + message.roomname + '>' + message.username + ': ' + message.text + '</p>');
+    var user = '<a href=' + '"' + message.username + '">';
+
+    $('#chats').append('<div class="msg"><p>' + message.username + ': ' + message.text + 
+      '</p><button>Add Friend</button></div>');  //'' + ''
+   // $('div').append('<button>Add Friend</button>')
+
   },
   renderRoom: function(message) {
-    //check room name, if room does not already exist in roomDropdown
-      //if true, append room to dropdown
-      //console.log('render called');
+    if(typeof(message) === 'string') {
+      console.log(message);
+       $('#roomSelect').append('<p>message</p>');
+    }
+     
       if (!(message.roomname in roomnameObj)) {
         console.log('RENDER ROOM TEST')
         roomnameObj[message.roomname] = true;
-        $('#roomDropdown').append("<option value=" + message.roomname + ">" + message.roomname + "</option>")  //<option value="lobby">Lobby</option>
+        $('#roomDropdown').append('<option value=' + '"' + message.roomname + '"' + '>' + message.roomname + '</option>')
       }
+  },
+  fetchByRoom: function(roomName) {  //fetchByRoom('myRoom', undefined)
+
+    console.log('ROOMNAME FROM SELECTOR ' ,roomName)
+    $.ajax({
+      url: 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages/' ,  //&limit=1000
+      type: 'GET',
+      data: 'order=-createdAt',//JSON.stringify(data, {order: "-createdAt", limit: 1000}),//JSON.stringify(data), 
+      contentType: 'application/json',
+      success: function (data) {
+        console.log("inside fetch: " , data);
+        var dataArray = data.results;
+        //app.clearMessages();
+        for (var i = 0; i < dataArray.length; i++) {
+          if (dataArray[i].roomname === roomName) {
+            app.renderMessage(dataArray[i]);
+            console.log(dataArray[i]);
+          }
+          //app.renderMessage(dataArray[i]);
+          //app.renderRoom(dataArray[i]);
+          if (!(dataArray[i].roomname in roomnameObj)) {
+            roomnameObj[dataArray[i].roomname] = true;
+            console.log('room not in')
+          }
+        }
+
+       
+  },
+      error: function(data) {
+        console.log('GET error');
   }
+  })
+  },
+  createNewRoom: function(roomName) {
+
+  }
+
+    
+       
+
+  
 }
 
 

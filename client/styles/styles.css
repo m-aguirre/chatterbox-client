@@ -87,7 +87,16 @@ form input[type=text] {
     color: #fff;
     background-color: #0090da;
 }
+.msg{
+    background-color: blue;
+}
 #messageField{
     width: 300px;
 }
-
+#addRoomField{
+    display: none;
+    width: 100px;
+}
+#add{
+    display: none;
+}
