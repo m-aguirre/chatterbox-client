@@ -26,15 +26,14 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <dropdown>Rooms</dropdown>
-      <select>
-    <option value="volvo">Volvo</option>
-    <option value="saab">Saab</option>
-    <option value="mercedes">Mercedes</option>
-    <option value="audi">Audi</option>
-</select>
+      <dropdown>Rooms: </dropdown>
+      <select id="roomDropdown">
+        <option value="lobby">Lobby</option>
+ 
+      </select>
+      <button id='changeRoomButton'> Select Room</button>
       <input type='text' id='messageField'>
-      <button id='submitMessageButton' onclick='app.fetch()'>Submit</button>
+      <button id='submitMessageButton'>Submit</button>
     </div>
     <div id="chats"></div>
   </body>

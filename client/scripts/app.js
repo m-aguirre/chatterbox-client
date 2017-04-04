@@ -9,9 +9,26 @@ var app = {};
 //   roomname: 'any'
 // };
 
+var roomnameObj = {};
+
 var app = {
   init: function() {
-    //EVENT HANDLERS
+    $('#submitMessageButton').on('click', function(){
+      var messageText = {
+        username: 'matt',
+        text: $('#messageField').val(),
+        roomname: 'YUJINS WORLD'
+      };
+      app.renderRoom(messageText);
+      app.renderMessage(messageText);
+    });
+
+   
+    $('#changeRoomButton').on('click', function(){
+      //var roomName = $.(val();
+      //$('#chats').filter(roomName).show();
+    
+    });
   },
   send: function(message) {
     $.ajax({
@@ -24,24 +41,30 @@ var app = {
 
      app.renderMessage(data);
   },
-  error: function (data) {
+    error: function (data) {
     console.error('chatterbox: Failed to send message', data);
   }
 });
   },
   fetch: function(data) {
     $.ajax({
-      url: 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages',
+      url: 'http://parse.sfs.hackreactor.com/chatterbox/classes/messages/' ,  //&limit=1000
       type: 'GET',
-      data: JSON.stringify(data),
+      data: 'order=-createdAt',//JSON.stringify(data, {order: "-createdAt", limit: 1000}),//JSON.stringify(data), 
       contentType: 'application/json',
       success: function (data) {
         console.log("inside fetch: " , data);
         var dataArray = data.results;
         for (var i = 0; i < dataArray.length; i++) {
           app.renderMessage(dataArray[i]);
+          app.renderRoom(dataArray[i]);
+          if (!(dataArray[i].roomname in roomnameObj)) {
+            roomnameObj[dataArray[i].roomname] = true;
+            console.log('room not in')
+          }
         }
-        // app.renderMessage(data);
+
+       
   },
       error: function(data) {
         console.log('GET error');
@@ -53,13 +76,22 @@ var app = {
   },
   renderMessage: function(message) {
     console.log('render message: ' , message);
-    $('#chats').append('<p>' + message.username + ': ' + message.text + '</p>');
+    //renderRoom(mesage);
+    $('#chats').prepend('<p id=' + message.roomname + '>' + message.username + ': ' + message.text + '</p>');
   },
-  renderRoom: function() {
-
+  renderRoom: function(message) {
+    //check room name, if room does not already exist in roomDropdown
+      //if true, append room to dropdown
+      //console.log('render called');
+      if (!(message.roomname in roomnameObj)) {
+        console.log('RENDER ROOM TEST')
+        roomnameObj[message.roomname] = true;
+        $('#roomDropdown').append("<option value=" + message.roomname + ">" + message.roomname + "</option>")  //<option value="lobby">Lobby</option>
+      }
   }
-
 }
+
+
 
 $(document).ready(function(){
   app.init()
